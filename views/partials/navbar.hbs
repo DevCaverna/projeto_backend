@@ -1,0 +1,18 @@
+<nav>
+  <a href="/" class="marca">🍳 Receitas</a>
+  <a href="/">Início</a>
+  <a href="/relatorio">Relatório</a>
+  {{#if usuario}}
+    {{#if (eq usuario.tipo "admin")}}
+      <a href="/admin/alunos">Alunos</a>
+      <a href="/admin/categorias">Categorias</a>
+      <a href="/admin/habilidades">Habilidades</a>
+    {{else}}
+      <a href="/aluno/receitas">Minhas Receitas</a>
+      <a href="/aluno/habilidades">Minhas Habilidades</a>
+    {{/if}}
+    <a href="/logout">Sair ({{usuario.nome}})</a>
+  {{else}}
+    <a href="/login">Login</a>
+  {{/if}}
+</nav>

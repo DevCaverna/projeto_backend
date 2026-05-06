@@ -1,0 +1,33 @@
+<h1>Nova Receita</h1>
+
+{{#if erro}}
+  <div class="erro">{{erro}}</div>
+{{/if}}
+
+<form method="POST" action="/aluno/receitas/cadastrar">
+  <label for="nome">Nome</label>
+  <input type="text" id="nome" name="nome" required>
+
+  <label for="descricao">Descrição</label>
+  <textarea id="descricao" name="descricao"></textarea>
+
+  <label for="link_externo">Link Externo</label>
+  <input type="text" id="link_externo" name="link_externo">
+
+  <label for="categorias">Categorias (segure Ctrl para selecionar várias)</label>
+  <select id="categorias" name="categorias" multiple>
+    {{#each categorias}}
+      <option value="{{this.id}}">{{this.nome}}</option>
+    {{/each}}
+  </select>
+
+  <label for="alunos">Coautores (segure Ctrl para selecionar vários)</label>
+  <select id="alunos" name="alunos" multiple>
+    {{#each alunos}}
+      <option value="{{this.id}}">{{this.nome}}</option>
+    {{/each}}
+  </select>
+
+  <button type="submit" class="btn btn-success">Cadastrar</button>
+  <a href="/aluno/receitas" class="btn btn-primary">Cancelar</a>
+</form>

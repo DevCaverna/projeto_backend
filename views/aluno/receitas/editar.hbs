@@ -1,0 +1,29 @@
+<h1>Editar Receita</h1>
+
+<form method="POST" action="/aluno/receitas/editar/{{receita.id}}">
+  <label for="nome">Nome</label>
+  <input type="text" id="nome" name="nome" value="{{receita.nome}}" required>
+
+  <label for="descricao">Descrição</label>
+  <textarea id="descricao" name="descricao">{{receita.descricao}}</textarea>
+
+  <label for="link_externo">Link Externo</label>
+  <input type="text" id="link_externo" name="link_externo" value="{{receita.link_externo}}">
+
+  <label for="categorias">Categorias (segure Ctrl para selecionar várias)</label>
+  <select id="categorias" name="categorias" multiple>
+    {{#each categorias}}
+      <option value="{{this.id}}" {{#if (includes ../categoriasIds this.id)}}selected{{/if}}>{{this.nome}}</option>
+    {{/each}}
+  </select>
+
+  <label for="alunos">Coautores (segure Ctrl para selecionar vários)</label>
+  <select id="alunos" name="alunos" multiple>
+    {{#each alunos}}
+      <option value="{{this.id}}" {{#if (includes ../alunosIds this.id)}}selected{{/if}}>{{this.nome}}</option>
+    {{/each}}
+  </select>
+
+  <button type="submit" class="btn btn-primary">Salvar</button>
+  <a href="/aluno/receitas" class="btn btn-danger">Cancelar</a>
+</form>

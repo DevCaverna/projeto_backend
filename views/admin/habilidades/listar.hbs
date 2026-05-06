@@ -1,0 +1,43 @@
+<h1>Habilidades</h1>
+<a
+	href="/admin/habilidades/cadastrar"
+	class="btn btn-success"
+	style="margin-bottom: 16px;"
+>+ Nova Habilidade</a>
+
+<table>
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Nome</th>
+			<th>Ações</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each habilidades}}
+			<tr>
+				<td>{{this.id}}</td>
+				<td>{{this.nome}}</td>
+				<td class="acoes">
+					<form
+						method="POST"
+						action="/admin/habilidades/excluir/{{this.id}}"
+						style="display:inline;"
+					>
+						<a
+							href="/admin/habilidades/editar/{{this.id}}"
+							class="btn btn-primary"
+						>Editar</a>
+						<button
+							type="submit"
+							class="btn btn-danger"
+							onclick="return confirm('Confirma exclusão?')"
+						>Excluir</button>
+					</form>
+				</td>
+			</tr>
+		{{else}}
+			<tr><td colspan="3">Nenhuma habilidade cadastrada.</td></tr>
+		{{/each}}
+	</tbody>
+</table>

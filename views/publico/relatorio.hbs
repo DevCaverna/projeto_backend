@@ -1,0 +1,27 @@
+<h1>Relatório de Habilidades</h1>
+<p>Proporção de alunos com domínio (nível &gt; 0) em cada habilidade:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Habilidade</th>
+      <th>Alunos com Domínio</th>
+      <th>Total de Alunos</th>
+      <th>Porcentagem</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each relatorio}}
+      <tr>
+        <td>{{this.nome}}</td>
+        <td>{{this.alunosComDominio}}</td>
+        <td>{{this.totalAlunos}}</td>
+        <td>{{this.porcentagem}}%</td>
+      </tr>
+    {{else}}
+      <tr>
+        <td colspan="4">Nenhuma habilidade cadastrada.</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

@@ -1,0 +1,30 @@
+<h1>Adicionar Habilidade</h1>
+
+{{#if habilidades.length}}
+  <form method="POST" action="/aluno/habilidades/adicionar">
+    <label for="habilidade_id">Habilidade</label>
+    <select id="habilidade_id" name="habilidade_id" required>
+      <option value="">Selecione...</option>
+      {{#each habilidades}}
+        <option value="{{this.id}}">{{this.nome}}</option>
+      {{/each}}
+    </select>
+
+    <label for="nivel">Nível (0 a 10)</label>
+    <input
+      type="number"
+      id="nivel"
+      name="nivel"
+      min="0"
+      max="10"
+      value="0"
+      required
+    />
+
+    <button type="submit" class="btn btn-success">Adicionar</button>
+    <a href="/aluno/habilidades" class="btn btn-primary">Cancelar</a>
+  </form>
+{{else}}
+  <p>Todas as habilidades já foram adicionadas ao seu perfil.</p>
+  <a href="/aluno/habilidades" class="btn btn-primary">Voltar</a>
+{{/if}}

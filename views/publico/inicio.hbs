@@ -1,0 +1,40 @@
+<h1>Receitas</h1>
+
+<form
+  method="GET"
+  action=""
+  style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;"
+>
+  <label for="filtro-categoria" style="margin-bottom: 0;">Filtrar por categoria:</label>
+  <select
+    id="filtro-categoria"
+    onchange="if(this.value) window.location='/categorias/'+this.value+'/receitas'"
+  >
+    <option value="">Todas</option>
+    {{#each categorias}}
+      <option value="{{this.id}}">{{this.nome}}</option>
+    {{/each}}
+  </select>
+</form>
+
+{{#each receitas}}
+  <div class="card">
+    <h3>{{this.nome}}</h3>
+    <p>{{this.descricao}}</p>
+    {{#if this.link_externo}}
+      <p><a href="{{this.link_externo}}" target="_blank">Link externo</a></p>
+    {{/if}}
+    <div class="tags">
+      {{#each this.categorias}}
+        <span class="tag">{{this.nome}}</span>
+      {{/each}}
+    </div>
+    <div class="tags">
+      {{#each this.alunos}}
+        <span class="tag">👤 {{this.nome}}</span>
+      {{/each}}
+    </div>
+  </div>
+{{else}}
+  <p>Nenhuma receita cadastrada.</p>
+{{/each}}

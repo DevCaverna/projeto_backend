@@ -1,0 +1,20 @@
+<h1>Receitas — {{categoria.nome}}</h1>
+
+<a href="/" class="btn btn-primary" style="margin-bottom: 20px;">← Voltar</a>
+
+{{#each receitas}}
+  <div class="card">
+    <h3>{{this.nome}}</h3>
+    <p>{{this.descricao}}</p>
+    {{#if this.link_externo}}
+      <p><a href="{{this.link_externo}}" target="_blank">Link externo</a></p>
+    {{/if}}
+    <div class="tags">
+      {{#each this.alunos}}
+        <span class="tag">👤 {{this.nome}}</span>
+      {{/each}}
+    </div>
+  </div>
+{{else}}
+  <p>Nenhuma receita nesta categoria.</p>
+{{/each}}

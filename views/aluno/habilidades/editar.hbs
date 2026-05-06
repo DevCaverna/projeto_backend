@@ -1,0 +1,17 @@
+<h1>Editar Nível — {{habilidade.nome}}</h1>
+
+<form method="POST" action="/aluno/habilidades/editar/{{habilidade.id}}">
+  <label for="nivel">Nível (0 a 10)</label>
+  <input
+    type="number"
+    id="nivel"
+    name="nivel"
+    min="0"
+    max="10"
+    value="{{nivel}}"
+    required
+  />
+
+  <button type="submit" class="btn btn-primary">Salvar</button>
+  <a href="/aluno/habilidades" class="btn btn-danger">Cancelar</a>
+</form>

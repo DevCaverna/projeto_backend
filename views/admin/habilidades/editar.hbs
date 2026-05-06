@@ -1,0 +1,13 @@
+<h1>Editar Habilidade</h1>
+
+{{#if erro}}
+  <div class="erro">{{erro}}</div>
+{{/if}}
+
+<form method="POST" action="/admin/habilidades/editar/{{habilidade.id}}">
+  <label for="nome">Nome</label>
+  <input type="text" id="nome" name="nome" value="{{habilidade.nome}}" required>
+
+  <button type="submit" class="btn btn-primary">Salvar</button>
+  <a href="/admin/habilidades" class="btn btn-danger">Cancelar</a>
+</form>

@@ -1,0 +1,53 @@
+<h1>Minhas Receitas</h1>
+<a
+	href="/aluno/receitas/cadastrar"
+	class="btn btn-success"
+	style="margin-bottom: 16px;"
+>+ Nova Receita</a>
+
+<table>
+	<thead>
+		<tr>
+			<th>Nome</th>
+			<th>Categorias</th>
+			<th>Coautores</th>
+			<th>Ações</th>
+		</tr>
+	</thead>
+	<tbody>
+		{{#each receitas}}
+			<tr>
+				<td>{{this.nome}}</td>
+				<td>
+					{{#each this.categorias}}
+						<span class="tag">{{this.nome}}</span>
+					{{/each}}
+				</td>
+				<td>
+					{{#each this.alunos}}
+						<span class="tag">{{this.nome}}</span>
+					{{/each}}
+				</td>
+				<td class="acoes">
+					<form
+						method="POST"
+						action="/aluno/receitas/excluir/{{this.id}}"
+						style="display:inline;"
+					>
+						<a
+							href="/aluno/receitas/editar/{{this.id}}"
+							class="btn btn-primary"
+						>Editar</a>
+						<button
+							type="submit"
+							class="btn btn-danger"
+							onclick="return confirm('Confirma exclusão?')"
+						>Excluir</button>
+					</form>
+				</td>
+			</tr>
+		{{else}}
+			<tr><td colspan="4">Nenhuma receita cadastrada.</td></tr>
+		{{/each}}
+	</tbody>
+</table>
