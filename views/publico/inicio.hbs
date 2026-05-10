@@ -3,38 +3,50 @@
 <form
   method="GET"
   action=""
-  style="margin-bottom: 20px; display: flex; gap: 10px; align-items: center;"
+  class="filter-form"
 >
-  <label for="filtro-categoria" style="margin-bottom: 0;">Filtrar por categoria:</label>
-  <select
-    id="filtro-categoria"
-    onchange="if(this.value) window.location='/categorias/'+this.value+'/receitas'"
-  >
-    <option value="">Todas</option>
-    {{#each categorias}}
-      <option value="{{this.id}}">{{this.nome}}</option>
-    {{/each}}
-  </select>
+  <div class="form-group" style="display: flex; gap: 15px; align-items: center; margin-bottom: 0;">
+    <label for="filtro-categoria" style="margin-bottom: 0;">Filtrar por categoria:</label>
+    <select
+      id="filtro-categoria"
+      style="margin-bottom: 0; max-width: 250px;"
+      onchange="if(this.value) window.location='/categorias/'+this.value+'/receitas'"
+    >
+      <option value="">Todas</option>
+      {{#each categorias}}
+        <option value="{{this.id}}">{{this.nome}}</option>
+      {{/each}}
+    </select>
+  </div>
 </form>
 
+<div class="recipe-grid">
 {{#each receitas}}
-  <div class="card">
-    <h3><a href="/receitas/{{this.id}}">{{this.nome}}</a></h3>
-    <p>{{this.descricao}}</p>
-    {{#if this.link_externo}}
-      <p><a href="{{this.link_externo}}" target="_blank">Link externo</a></p>
-    {{/if}}
-    <div class="tags">
-      {{#each this.categorias}}
-        <span class="tag">{{this.nome}}</span>
-      {{/each}}
-    </div>
-    <div class="tags">
-      {{#each this.alunos}}
-        <span class="tag">👤 {{this.nome}}</span>
-      {{/each}}
+  <div class="recipe-card">
+    <div class="recipe-card-content">
+      <h3><a href="/receitas/{{this.id}}">{{this.nome}}</a></h3>
+      <p>{{this.descricao}}</p>
+
+      <div class="tags">
+        {{#each this.categorias}}
+          <span class="tag">{{this.nome}}</span>
+        {{/each}}
+      </div>
+
+      <div class="tags" style="margin-top: 10px;">
+        {{#each this.alunos}}
+          <span class="tag aluno">👤 {{this.nome}}</span>
+        {{/each}}
+      </div>
+
+      {{#if this.link_externo}}
+        <div style="margin-top: 20px;">
+          <a href="{{this.link_externo}}" target="_blank" class="btn btn-primary" style="font-size: 0.8rem; padding: 6px 12px;">Ver Fonte Externa</a>
+        </div>
+      {{/if}}
     </div>
   </div>
 {{else}}
   <p>Nenhuma receita cadastrada.</p>
 {{/each}}
+</div>

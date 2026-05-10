@@ -1,67 +1,68 @@
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h1 class="card-title">{{receita.nome}}</h1>
-                    <p class="card-text">{{receita.descricao}}</p>
-                    {{#if receita.link_externo}}
-                        <p><a href="{{receita.link_externo}}" target="_blank">Link Externo</a></p>
-                    {{/if}}
-
-                    <h5 class="mt-4">Categorias:</h5>
-                    <ul class="list-inline">
-                        {{#each receita.categorias}}
-                            <li class="list-inline-item badge bg-primary text-white">{{nome}}</li>
-                        {{/each}}
-                    </ul>
-
-                    <h5 class="mt-4">Alunos Colaboradores:</h5>
-                    <ul class="list-inline">
-                        {{#each receita.alunos}}
-                            <li class="list-inline-item badge bg-secondary text-white">{{nome}}</li>
-                        {{/each}}
-                    </ul>
-                </div>
-            </div>
-
-            {{! Formulário de Comentários }}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3>Adicionar Comentário</h3>
-                </div>
-                <div class="card-body">
-                    {{#if usuario}}
-                        <form action="/receitas/{{receita.id}}/comentarios" method="POST">
-                            <div class="mb-3">
-                                <label for="texto" class="form-label">Seu Comentário</label>
-                                <textarea class="form-control" id="texto" name="texto" rows="3" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-success">Enviar Comentário</button>
-                        </form>
-                    {{else}}
-                        <p>Faça <a href="/login">login</a> para adicionar um comentário.</p>
-                    {{/if}}
-                </div>
-            </div>
-
-            {{! Lista de Comentários }}
-            <div class="card">
-                <div class="card-header">
-                    <h3>Comentários ({{comentarios.length}})</h3>
-                </div>
-                <ul class="list-group list-group-flush">
-                    {{#each comentarios}}
-                        <li class="list-group-item">
-                            <p class="mb-1"><strong>{{autor.nome}}</strong> em {{formatDate dataCriacao}}</p>
-                            <p>{{texto}}</p>
-                        </li>
-                    {{else}}
-                        <li class="list-group-item">Nenhum comentário ainda.</li>
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
+<div class="recipe-header">
+    <h1>{{receita.nome}}</h1>
+    <div class="tags" style="justify-content: center;">
+        {{#each receita.categorias}}
+            <span class="tag" style="font-size: 0.9rem; padding: 6px 15px;">{{nome}}</span>
+        {{/each}}
     </div>
 </div>
 
+<div class="recipe-info-card">
+    <h3>Descrição</h3>
+    <p style="margin-bottom: 25px; font-size: 1.1rem;">{{receita.descricao}}</p>
+
+    {{#if receita.link_externo}}
+        <p style="margin-bottom: 25px;">
+            <a href="{{receita.link_externo}}" target="_blank" class="btn btn-primary">Acessar Receita Original</a>
+        </p>
+    {{/if}}
+
+    <h5 class="mt-4">Alunos Colaboradores:</h5>
+    <div class="tags">
+        {{#each receita.alunos}}
+            <span class="tag aluno" style="font-size: 0.9rem; padding: 6px 15px;">👤 {{nome}}</span>
+        {{/each}}
+    </div>
+</div>
+
+<div class="comments-section">
+    <h2 style="margin-bottom: 30px; border-bottom: 2px solid var(--primary-color); display: inline-block; padding-bottom: 5px;">
+        Comentários ({{comentarios.length}})
+    </h2>
+
+    {{! Lista de Comentários }}
+    <div style="margin-bottom: 50px;">
+        {{#each comentarios}}
+            <div class="comment-bubble">
+                <div class="comment-header">
+                    <span class="comment-author">{{autor.nome}}</span>
+                    <span>{{formatDate dataCriacao}}</span>
+                </div>
+                <p style="color: var(--text-color);">{{texto}}</p>
+            </div>
+        {{else}}
+            <p style="color: var(--text-muted); font-style: italic;">Seja o primeiro a comentar nesta receita!</p>
+        {{/each}}
+    </div>
+
+    {{! Formulário de Comentários }}
+    <div style="max-width: 600px;">
+        <h3 style="margin-bottom: 20px;">Adicionar Comentário</h3>
+        {{#if usuario}}
+            <form action="/receitas/{{receita.id}}/comentarios" method="POST" style="padding: 0; box-shadow: none; background: transparent;">
+                <div class="form-group">
+                    <textarea class="form-control" name="texto" rows="4" placeholder="O que você achou desta receita?" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Publicar Comentário</button>
+            </form>
+        {{else}}
+            <div style="background: rgba(44, 62, 80, 0.05); padding: 20px; border-radius: 10px; border: 1px dashed var(--secondary-color);">
+                <p>Você precisa estar logado para comentar. <a href="/login" style="color: var(--primary-color); font-weight: 600;">Faça login aqui</a>.</p>
+            </div>
+        {{/if}}
+    </div>
+</div>
+
+<div style="margin-top: 40px;">
+    <a href="/" class="btn" style="background: var(--secondary-color); color: white;">← Voltar para a lista</a>
+</div>
