@@ -5,6 +5,8 @@ const {
 	Usuario,
 	AlunoHabilidade,
 } = require('../models');
+const { mongoose } = require('../config/bancoDeDados');
+const Comentario = require('../models/Comentario');
 
 const paginaInicial = async (req, res) => {
 	const categorias = await Categoria.findAll();
@@ -41,7 +43,6 @@ const relatorioHabilidades = async (req, res) => {
 	const relatorio = [];
 
 	for (const habilidade of habilidades) {
-		// Conta quantos alunos possuem nível > 0 nesta habilidade
 		const alunosComDominio = await AlunoHabilidade.count({
 			where: {
 				habilidade_id: habilidade.id,
@@ -65,4 +66,73 @@ const relatorioHabilidades = async (req, res) => {
 	res.render('publico/relatorio', { relatorio });
 };
 
-module.exports = { paginaInicial, receitasPorCategoria, relatorioHabilidades };
+const criarComentario = async (req, res) => {
+	try {
+		const { texto } = req.body;
+		const { id } = req.params;
+		if (!req.session.usuario) {
+			return res
+				.status(401)
+				.send('Você precisa estar logado para comentar.');
+		}
+		const autorId = req.session.usuario.id;
+
+		const comentario = new Comentario({
+			texto,
+			autor: autorId,
+			receita: id,
+		});
+
+		await comentario.save();
+		res.redirect(`/receitas/${id}`);
+	} catch (error) {
+		console.error('Erro ao criar comentário:', error);
+		res.status(500).send('Erro ao criar comentário.');
+	}
+};
+
+const exibirReceita = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const receita = await Receita.findByPk(id, {
+			include: [{ association: 'categorias' }, { association: 'alunos' }],
+		});
+
+		if (!receita) {
+			return res.status(404).send('Receita não encontrada.');
+		}
+
+		const comentarios = await Comentario.find({ receita: id }).lean();
+
+		const comentariosComAutor = await Promise.all(
+			comentarios.map(async (comentario) => {
+				const autor = await Usuario.findByPk(comentario.autor, {
+					attributes: ['id', 'nome', 'email'],
+				});
+				return {
+					...comentario,
+					autor: autor
+						? autor.get({ plain: true })
+						: { nome: 'Desconhecido' },
+				};
+			}),
+		);
+
+		res.render('publico/receitaDetalhe', {
+			receita: receita.get({ plain: true }),
+			comentarios: comentariosComAutor,
+			usuario: req.session.usuario,
+		});
+	} catch (error) {
+		console.error('Erro ao exibir receita:', error);
+		res.status(500).send('Erro ao exibir receita.');
+	}
+};
+
+module.exports = {
+	paginaInicial,
+	receitasPorCategoria,
+	relatorioHabilidades,
+	criarComentario,
+	exibirReceita,
+};

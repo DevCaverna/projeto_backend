@@ -19,7 +19,7 @@
 
 {{#each receitas}}
   <div class="card">
-    <h3>{{this.nome}}</h3>
+    <h3><a href="/receitas/{{this.id}}">{{this.nome}}</a></h3>
     <p>{{this.descricao}}</p>
     {{#if this.link_externo}}
       <p><a href="{{this.link_externo}}" target="_blank">Link externo</a></p>

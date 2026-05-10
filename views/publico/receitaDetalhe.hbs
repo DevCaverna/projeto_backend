@@ -1,0 +1,67 @@
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="card-title">{{receita.nome}}</h1>
+                    <p class="card-text">{{receita.descricao}}</p>
+                    {{#if receita.link_externo}}
+                        <p><a href="{{receita.link_externo}}" target="_blank">Link Externo</a></p>
+                    {{/if}}
+
+                    <h5 class="mt-4">Categorias:</h5>
+                    <ul class="list-inline">
+                        {{#each receita.categorias}}
+                            <li class="list-inline-item badge bg-primary text-white">{{nome}}</li>
+                        {{/each}}
+                    </ul>
+
+                    <h5 class="mt-4">Alunos Colaboradores:</h5>
+                    <ul class="list-inline">
+                        {{#each receita.alunos}}
+                            <li class="list-inline-item badge bg-secondary text-white">{{nome}}</li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+
+            {{! Formulário de Comentários }}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Adicionar Comentário</h3>
+                </div>
+                <div class="card-body">
+                    {{#if usuario}}
+                        <form action="/receitas/{{receita.id}}/comentarios" method="POST">
+                            <div class="mb-3">
+                                <label for="texto" class="form-label">Seu Comentário</label>
+                                <textarea class="form-control" id="texto" name="texto" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Enviar Comentário</button>
+                        </form>
+                    {{else}}
+                        <p>Faça <a href="/login">login</a> para adicionar um comentário.</p>
+                    {{/if}}
+                </div>
+            </div>
+
+            {{! Lista de Comentários }}
+            <div class="card">
+                <div class="card-header">
+                    <h3>Comentários ({{comentarios.length}})</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {{#each comentarios}}
+                        <li class="list-group-item">
+                            <p class="mb-1"><strong>{{autor.nome}}</strong> em {{formatDate dataCriacao}}</p>
+                            <p>{{texto}}</p>
+                        </li>
+                    {{else}}
+                        <li class="list-group-item">Nenhum comentário ainda.</li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+

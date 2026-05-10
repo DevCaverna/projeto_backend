@@ -13,6 +13,15 @@ app.engine(
 		helpers: {
 			eq: (a, b) => a === b,
 			includes: (arr, val) => Array.isArray(arr) && arr.includes(val),
+			formatDate: (date) => {
+				const d = new Date(date);
+				const day = String(d.getDate()).padStart(2, '0');
+				const month = String(d.getMonth() + 1).padStart(2, '0');
+				const year = d.getFullYear();
+				const hours = String(d.getHours()).padStart(2, '0');
+				const minutes = String(d.getMinutes()).padStart(2, '0');
+				return `${day}/${month}/${year} ${hours}:${minutes}`;
+			},
 		},
 	}),
 );
@@ -24,7 +33,7 @@ app.use(express.json());
 
 app.use(
 	session({
-		secret: 'chave-secreta-projeto-receitas',
+		secret: '8b3af8118df1b443c3d1af345f08a983024057b39a925e2b1c3b75462c5f3785',
 		resave: false,
 		saveUninitialized: false,
 	}),
