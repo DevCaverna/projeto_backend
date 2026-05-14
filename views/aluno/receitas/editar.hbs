@@ -1,5 +1,9 @@
 <h1>Editar Receita</h1>
 
+{{#if erro}}
+  <div class="erro">{{erro}}</div>
+{{/if}}
+
 <form method="POST" action="/aluno/receitas/editar/{{receita.id}}">
   <label for="nome">Nome</label>
   <input type="text" id="nome" name="nome" value="{{receita.nome}}" required>
@@ -24,6 +28,8 @@
     {{/each}}
   </select>
 
-  <button type="submit" class="btn btn-primary">Salvar</button>
-  <a href="/aluno/receitas" class="btn btn-danger">Cancelar</a>
+  <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="/aluno/receitas" class="btn btn-secondary">Cancelar</a>
+  </div>
 </form>

@@ -33,6 +33,12 @@ async function executarSeed() {
 		senha: senhaAluno,
 		tipo: 'aluno',
 	});
+	const aluno3 = await Usuario.create({
+		nome: 'Luiz',
+		email: 'luiz@email.com',
+		senha: await bcrypt.hash('12345678', 10),
+		tipo: 'aluno',
+	});
 
 	const cat1 = await Categoria.create({ nome: 'Massas' });
 	const cat2 = await Categoria.create({ nome: 'Sobremesas' });
@@ -57,7 +63,7 @@ async function executarSeed() {
 	await receita1.setAlunos([aluno1.id, aluno2.id]);
 
 	await receita2.setCategorias([cat2.id]);
-	await receita2.setAlunos([aluno2.id]);
+	await receita2.setAlunos([aluno2.id, aluno3.id]);
 
 	await AlunoHabilidade.create({
 		aluno_id: aluno1.id,
@@ -73,6 +79,11 @@ async function executarSeed() {
 		aluno_id: aluno2.id,
 		habilidade_id: hab3.id,
 		nivel: 9,
+	});
+	await AlunoHabilidade.create({
+		aluno_id: aluno3.id,
+		habilidade_id: hab2.id,
+		nivel: 6,
 	});
 
 	console.log('Seed executado com sucesso!');

@@ -55,7 +55,7 @@ app.use('/', authRotas);
 app.use('/admin', adminRotas);
 app.use('/aluno', alunoRotas);
 
-const PORTA = 3000;
+const PORTA = Number(process.env.PORT) || 3000;
 
 sequelize.sync().then(() => {
 	app.listen(PORTA, () => {

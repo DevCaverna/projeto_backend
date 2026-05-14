@@ -1,9 +1,12 @@
 const express = require('express');
 const roteador = express.Router();
-const { verificarLogin } = require('../middlewares/autenticacao');
+const {
+	verificarLogin,
+	verificarAluno,
+} = require('../middlewares/autenticacao');
 const aluno = require('../controllers/alunoControlador');
 
-roteador.use(verificarLogin);
+roteador.use(verificarLogin, verificarAluno);
 
 roteador.get('/receitas', aluno.listarReceitas);
 roteador.get('/receitas/cadastrar', aluno.formularioCadastroReceita);

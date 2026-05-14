@@ -5,6 +5,7 @@
 	"main": "app.js",
 	"scripts": {
 		"start": "node app.js",
+		"seed": "node seed.js",
 		"format": "prettier --write ."
 	},
 	"dependencies": {

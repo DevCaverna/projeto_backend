@@ -12,4 +12,11 @@ function verificarAdmin(req, res, next) {
 	next();
 }
 
-module.exports = { verificarLogin, verificarAdmin };
+function verificarAluno(req, res, next) {
+	if (!req.session.usuario || req.session.usuario.tipo !== 'aluno') {
+		return res.redirect('/');
+	}
+	next();
+}
+
+module.exports = { verificarLogin, verificarAdmin, verificarAluno };
