@@ -6,23 +6,58 @@ const {
 	AlunoHabilidade,
 } = require('../models');
 
+const carregarDadosFormularioReceita = async () => {
+	const [categorias, alunos] = await Promise.all([
+		Categoria.findAll(),
+		Usuario.findAll({ where: { tipo: 'aluno' } }),
+	]);
+
+	return {
+		categorias: categorias.map((c) => c.get({ plain: true })),
+		alunos: alunos.map((a) => a.get({ plain: true })),
+	};
+};
+
+const buscarReceitaDoAluno = async (receitaId, alunoId) => {
+	const receita = await Receita.findByPk(receitaId, {
+		include: [{ association: 'categorias' }, { association: 'alunos' }],
+	});
+
+	if (!receita) {
+		return null;
+	}
+
+	const receitaPlain = receita.get({ plain: true });
+	const participaDaReceita = receitaPlain.alunos.some(
+		(aluno) => aluno.id === alunoId,
+	);
+
+	return participaDaReceita ? receitaPlain : null;
+};
+
 // ===================== RECEITAS =====================
 
 const listarReceitas = async (req, res) => {
 	const receitas = await Receita.findAll({
 		include: [{ association: 'categorias' }, { association: 'alunos' }],
 	});
+
 	res.render('aluno/receitas/listar', {
-		receitas: receitas.map((r) => r.get({ plain: true })),
+		receitas: receitas
+			.map((r) => r.get({ plain: true }))
+			.filter((receita) =>
+				receita.alunos.some(
+					(aluno) => aluno.id === req.session.usuario.id,
+				),
+			),
 	});
 };
 
 const formularioCadastroReceita = async (req, res) => {
-	const categorias = await Categoria.findAll();
-	const alunos = await Usuario.findAll({ where: { tipo: 'aluno' } });
+	const { categorias, alunos } = await carregarDadosFormularioReceita();
 	res.render('aluno/receitas/cadastrar', {
-		categorias: categorias.map((c) => c.get({ plain: true })),
-		alunos: alunos.map((a) => a.get({ plain: true })),
+		categorias,
+		alunos,
 	});
 };
 
@@ -48,31 +83,33 @@ const cadastrarReceita = async (req, res) => {
 
 		res.redirect('/aluno/receitas');
 	} catch (erro) {
-		const categorias = await Categoria.findAll();
-		const alunos = await Usuario.findAll({ where: { tipo: 'aluno' } });
+		const { categorias, alunos } = await carregarDadosFormularioReceita();
 		res.render('aluno/receitas/cadastrar', {
-			categorias: categorias.map((c) => c.get({ plain: true })),
-			alunos: alunos.map((a) => a.get({ plain: true })),
+			categorias,
+			alunos,
 			erro: 'Erro ao cadastrar receita. Verifique os campos.',
 		});
 	}
 };
 
 const formularioEditarReceita = async (req, res) => {
-	const receita = await Receita.findByPk(req.params.id, {
-		include: [{ association: 'categorias' }, { association: 'alunos' }],
-	});
-	const categorias = await Categoria.findAll();
-	const alunos = await Usuario.findAll({ where: { tipo: 'aluno' } });
+	const receita = await buscarReceitaDoAluno(
+		req.params.id,
+		req.session.usuario.id,
+	);
 
-	const plainReceita = receita.get({ plain: true });
-	const categoriasIds = plainReceita.categorias.map((c) => c.id);
-	const alunosIds = plainReceita.alunos.map((a) => a.id);
+	if (!receita) {
+		return res.redirect('/aluno/receitas');
+	}
+
+	const { categorias, alunos } = await carregarDadosFormularioReceita();
+	const categoriasIds = receita.categorias.map((c) => c.id);
+	const alunosIds = receita.alunos.map((a) => a.id);
 
 	res.render('aluno/receitas/editar', {
-		receita: plainReceita,
-		categorias: categorias.map((c) => c.get({ plain: true })),
-		alunos: alunos.map((a) => a.get({ plain: true })),
+		receita,
+		categorias,
+		alunos,
 		categoriasIds,
 		alunosIds,
 	});
@@ -80,6 +117,15 @@ const formularioEditarReceita = async (req, res) => {
 
 const editarReceita = async (req, res) => {
 	try {
+		const receitaAutorizada = await buscarReceitaDoAluno(
+			req.params.id,
+			req.session.usuario.id,
+		);
+
+		if (!receitaAutorizada) {
+			return res.redirect('/aluno/receitas');
+		}
+
 		const { nome, descricao, link_externo, categorias, alunos } = req.body;
 		await Receita.update(
 			{ nome, descricao, link_externo },
@@ -107,11 +153,37 @@ const editarReceita = async (req, res) => {
 
 		res.redirect('/aluno/receitas');
 	} catch (erro) {
-		res.redirect('/aluno/receitas');
+		const receita = await buscarReceitaDoAluno(
+			req.params.id,
+			req.session.usuario.id,
+		);
+		const { categorias, alunos } = await carregarDadosFormularioReceita();
+
+		if (!receita) {
+			return res.redirect('/aluno/receitas');
+		}
+
+		res.render('aluno/receitas/editar', {
+			receita,
+			categorias,
+			alunos,
+			categoriasIds: receita.categorias.map((categoria) => categoria.id),
+			alunosIds: receita.alunos.map((aluno) => aluno.id),
+			erro: 'Erro ao editar receita. Verifique os campos.',
+		});
 	}
 };
 
 const excluirReceita = async (req, res) => {
+	const receita = await buscarReceitaDoAluno(
+		req.params.id,
+		req.session.usuario.id,
+	);
+
+	if (!receita) {
+		return res.redirect('/aluno/receitas');
+	}
+
 	await Receita.destroy({ where: { id: req.params.id } });
 	res.redirect('/aluno/receitas');
 };
